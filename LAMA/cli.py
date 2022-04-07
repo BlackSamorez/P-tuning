@@ -1,3 +1,8 @@
+import sys
+import pathlib
+sys.path.append("../")
+
+
 import json
 import os
 import torch
@@ -79,7 +84,7 @@ def construct_generation_args():
 class Trainer(object):
     def __init__(self, args):
         self.args = args
-        self.device = 'cuda:0' if self.args.model_name != 't5-11b' else 'cuda:{}'.format(self.args.t5_shard * 4)
+        self.device = 'cuda:1' if self.args.model_name != 't5-11b' else 'cuda:{}'.format(self.args.t5_shard * 4)
 
         if self.args.use_original_template and (not self.args.use_lm_finetune) and (not self.args.only_evaluate):
             raise RuntimeError("""If use args.use_original_template is True, 
@@ -93,9 +98,9 @@ class Trainer(object):
         # load datasets and dataloaders
         self.relation, self.data_path_pre, self.data_path_post = self.get_TREx_parameters()
 
-        self.train_data = load_file(join(self.args.data_dir, self.data_path_pre + 'train' + self.data_path_post))
-        self.dev_data = load_file(join(self.args.data_dir, self.data_path_pre + 'dev' + self.data_path_post))
-        self.test_data = load_file(join(self.args.data_dir, self.data_path_pre + 'test' + self.data_path_post))
+        self.train_data = load_file("./data/train.jsonl")
+        self.dev_data = load_file("./data/test.jsonl")
+        self.test_data = load_file("./data/test.jsonl")
 
         self.test_set = LAMADataset('test', self.test_data, self.tokenizer, self.args)
         self.train_set = LAMADataset('train', self.train_data, self.tokenizer, self.args)

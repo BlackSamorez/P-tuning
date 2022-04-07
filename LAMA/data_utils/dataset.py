@@ -22,14 +22,14 @@ class LAMADataset(Dataset):
 
         vocab = get_vocab_by_strategy(args, tokenizer)
         for d in data:
-            if token_wrapper(args, d['obj_label']) not in vocab:
+            if token_wrapper(args, d['suffix']) not in vocab:
                 continue
-            self.x_ts.append(d['obj_label'])
-            self.x_hs.append(d['sub_label'])
+            self.x_ts.append(d['suffix'])
+            self.x_hs.append(d['prefix'])
             self.data.append(d)
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, i):
-        return self.data[i]['sub_label'], self.data[i]['obj_label']
+        return self.data[i]['prefix'], self.data[i]['suffix']
