@@ -84,7 +84,7 @@ def construct_generation_args():
 class Trainer(object):
     def __init__(self, args):
         self.args = args
-        self.device = 'cuda:1' if self.args.model_name != 't5-11b' else 'cuda:{}'.format(self.args.t5_shard * 4)
+        self.device = 'cuda:0' if self.args.model_name != 't5-11b' else 'cuda:{}'.format(self.args.t5_shard * 4)
 
         if self.args.use_original_template and (not self.args.use_lm_finetune) and (not self.args.only_evaluate):
             raise RuntimeError("""If use args.use_original_template is True, 
@@ -94,9 +94,6 @@ class Trainer(object):
         tokenizer_src = 'roberta-large' if 'megatron' in self.args.model_name else self.args.model_name
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_src, use_fast=False)
         init_vocab(args)
-
-        # load datasets and dataloaders
-        self.relation, self.data_path_pre, self.data_path_post = self.get_TREx_parameters()
 
         self.train_data = load_file("./data/train.jsonl")
         self.dev_data = load_file("./data/test.jsonl")
